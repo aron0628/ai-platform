@@ -10,7 +10,7 @@ set GITHUB_ORG=aron0628
 echo === AI-Platform 초기 세팅 ===
 echo.
 
-REM 1. 하위 프로젝트 clone
+REM 하위 프로젝트 clone
 for %%R in (react-agent document-parser-server document-parser-client file-manager-admin agent-chat-ui) do (
     if exist "%%R\" (
         echo [SKIP] %%R/ 이미 존재
@@ -21,23 +21,6 @@ for %%R in (react-agent document-parser-server document-parser-client file-manag
             echo [ERROR] %%R clone 실패
             exit /b 1
         )
-    )
-)
-
-echo.
-
-REM 2. envs/ → 각 프로젝트/.env 복사
-for %%P in (react-agent document-parser-server file-manager-admin agent-chat-ui) do (
-    if exist "envs\%%P.env" (
-        copy "envs\%%P.env" "%%P\.env" >nul
-        echo [COPY] envs/%%P.env → %%P/.env
-    ) else if exist "%%P\.env" (
-        echo [SKIP] %%P/.env 이미 존재
-    ) else if exist "%%P\.env.example" (
-        copy "%%P\.env.example" "%%P\.env" >nul
-        echo [CREATE] %%P/.env (← .env.example 복사됨, API 키 입력 필요^)
-    ) else (
-        echo [WARN] %%P/.env.example 없음
     )
 )
 

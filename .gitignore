@@ -5,10 +5,5 @@ document-parser-client/
 file-manager-admin/
 agent-chat-ui/
 
-# 환경변수 (각 프로젝트 내 .env는 제외, envs/는 git-crypt로 관리)
-.env
+# 환경변수
 *.env.local
-!envs/*.env
-
-# git-crypt 키 파일 (절대 커밋 금지)
-git-crypt-key

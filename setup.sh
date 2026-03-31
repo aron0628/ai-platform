@@ -17,32 +17,13 @@ GITHUB_ORG="aron0628"
 echo "=== AI-Platform 초기 세팅 ==="
 echo ""
 
-# 1. 하위 프로젝트 clone
+# 하위 프로젝트 clone
 for repo in "${REPOS[@]}"; do
   if [ -d "$repo" ]; then
     echo "[SKIP] $repo/ 이미 존재"
   else
     echo "[CLONE] $repo ..."
     git clone "https://github.com/${GITHUB_ORG}/${repo}.git"
-  fi
-done
-
-echo ""
-
-# 2. envs/ → 각 프로젝트/.env 복사
-ENV_PROJECTS=("react-agent" "document-parser-server" "file-manager-admin" "agent-chat-ui")
-
-for project in "${ENV_PROJECTS[@]}"; do
-  if [ -f "envs/${project}.env" ]; then
-    cp "envs/${project}.env" "${project}/.env"
-    echo "[COPY] envs/${project}.env → ${project}/.env"
-  elif [ -f "$project/.env" ]; then
-    echo "[SKIP] $project/.env 이미 존재"
-  elif [ -f "$project/.env.example" ]; then
-    cp "$project/.env.example" "$project/.env"
-    echo "[CREATE] $project/.env (← .env.example 복사됨, API 키 입력 필요)"
-  else
-    echo "[WARN] $project/.env.example 없음"
   fi
 done
 
