@@ -19,7 +19,7 @@
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/macOS)
 - Git
 
-### 초기 세팅
+### macOS / Linux
 
 ```bash
 git clone https://github.com/aron0628/ai-platform.git
@@ -32,6 +32,21 @@ chmod +x setup.sh
 # 각 프로젝트 .env 파일에 API 키 입력 후 실행
 docker compose up -d --build
 ```
+
+### Windows
+
+```cmd
+git clone https://github.com/aron0628/ai-platform.git
+cd ai-platform
+
+# 자동 세팅 (프로젝트 clone + .env 생성)
+setup.bat
+
+# 각 프로젝트 .env 파일에 API 키 입력 후 실행
+docker compose up -d --build
+```
+
+> Windows는 [Docker Desktop](https://www.docker.com/products/docker-desktop/) 설치 시 WSL2가 자동 활성화됩니다.
 
 ### 수동 세팅
 
@@ -46,11 +61,18 @@ git clone https://github.com/aron0628/document-parser-client.git
 git clone https://github.com/aron0628/file-manager-admin.git
 git clone https://github.com/aron0628/agent-chat-ui.git
 
-# .env 세팅
+# .env 세팅 (macOS/Linux)
 cp react-agent/.env.example react-agent/.env
 cp document-parser-server/.env.example document-parser-server/.env
 cp file-manager-admin/.env.example file-manager-admin/.env
 cp agent-chat-ui/.env.example agent-chat-ui/.env
+
+# .env 세팅 (Windows cmd)
+# copy react-agent\.env.example react-agent\.env
+# copy document-parser-server\.env.example document-parser-server\.env
+# copy file-manager-admin\.env.example file-manager-admin\.env
+# copy agent-chat-ui\.env.example agent-chat-ui\.env
+
 # → 각 .env에 API 키 입력
 
 # 실행
