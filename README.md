@@ -18,6 +18,7 @@
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/macOS)
 - Git
+- [git-crypt](https://github.com/AGWA/git-crypt) (`.env` 복호화용)
 
 ### macOS / Linux
 
@@ -25,11 +26,14 @@
 git clone https://github.com/aron0628/ai-platform.git
 cd ai-platform
 
-# 자동 세팅 (프로젝트 clone + .env 생성)
+# .env 복호화 (키 파일은 팀 vault에서 받기)
+git-crypt unlock ./git-crypt-key
+
+# 자동 세팅 (프로젝트 clone + envs/ → 각 프로젝트/.env 복사)
 chmod +x setup.sh
 ./setup.sh
 
-# 각 프로젝트 .env 파일에 API 키 입력 후 실행
+# 실행
 docker compose up -d --build
 ```
 
@@ -39,44 +43,41 @@ docker compose up -d --build
 git clone https://github.com/aron0628/ai-platform.git
 cd ai-platform
 
-# 자동 세팅 (프로젝트 clone + .env 생성)
+# .env 복호화 (키 파일은 팀 vault에서 받기)
+git-crypt unlock ./git-crypt-key
+
+# 자동 세팅 (프로젝트 clone + envs/ → 각 프로젝트/.env 복사)
 setup.bat
 
-# 각 프로젝트 .env 파일에 API 키 입력 후 실행
+# 실행
 docker compose up -d --build
 ```
 
 > Windows는 [Docker Desktop](https://www.docker.com/products/docker-desktop/) 설치 시 WSL2가 자동 활성화됩니다.
+> git-crypt는 WSL2 또는 [Git Bash](https://gitforwindows.org/) 환경에서 사용하세요.
 
-### 수동 세팅
+## .env 관리 (git-crypt)
+
+환경변수는 `envs/` 폴더에서 git-crypt로 암호화하여 관리합니다.
+
+```
+envs/
+├── react-agent.env
+├── document-parser-server.env
+├── file-manager-admin.env
+└── agent-chat-ui.env
+```
+
+- `setup.sh` / `setup.bat` 실행 시 `envs/*.env` → 각 프로젝트의 `.env`로 자동 복사
+- GitHub에는 암호화된 바이너리로 저장 (키 없이 열람 불가)
+- 키 파일(`git-crypt-key`)은 1Password 등 안전한 경로로 팀 공유
+
+### 키 내보내기 (최초 세팅자)
 
 ```bash
-git clone https://github.com/aron0628/ai-platform.git
-cd ai-platform
-
-# 하위 프로젝트 clone
-git clone https://github.com/aron0628/react-agent.git
-git clone https://github.com/aron0628/document-parser-server.git
-git clone https://github.com/aron0628/document-parser-client.git
-git clone https://github.com/aron0628/file-manager-admin.git
-git clone https://github.com/aron0628/agent-chat-ui.git
-
-# .env 세팅 (macOS/Linux)
-cp react-agent/.env.example react-agent/.env
-cp document-parser-server/.env.example document-parser-server/.env
-cp file-manager-admin/.env.example file-manager-admin/.env
-cp agent-chat-ui/.env.example agent-chat-ui/.env
-
-# .env 세팅 (Windows cmd)
-# copy react-agent\.env.example react-agent\.env
-# copy document-parser-server\.env.example document-parser-server\.env
-# copy file-manager-admin\.env.example file-manager-admin\.env
-# copy agent-chat-ui\.env.example agent-chat-ui\.env
-
-# → 각 .env에 API 키 입력
-
-# 실행
-docker compose up -d --build
+git-crypt export-key ./git-crypt-key
+# → 이 파일을 팀원에게 안전하게 전달
+# → git-crypt-key는 절대 git에 올리지 않음
 ```
 
 ## 필수 API 키

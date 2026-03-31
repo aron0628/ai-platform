@@ -26,9 +26,12 @@ for %%R in (react-agent document-parser-server document-parser-client file-manag
 
 echo.
 
-REM 2. .env 파일 생성
+REM 2. envs/ → 각 프로젝트/.env 복사
 for %%P in (react-agent document-parser-server file-manager-admin agent-chat-ui) do (
-    if exist "%%P\.env" (
+    if exist "envs\%%P.env" (
+        copy "envs\%%P.env" "%%P\.env" >nul
+        echo [COPY] envs/%%P.env → %%P/.env
+    ) else if exist "%%P\.env" (
         echo [SKIP] %%P/.env 이미 존재
     ) else if exist "%%P\.env.example" (
         copy "%%P\.env.example" "%%P\.env" >nul
@@ -42,8 +45,7 @@ echo.
 echo === 세팅 완료 ===
 echo.
 echo 다음 단계:
-echo   1. 각 프로젝트의 .env 파일에 API 키를 입력하세요
-echo   2. docker compose up -d --build
+echo   1. docker compose up -d --build
 echo.
 
 endlocal

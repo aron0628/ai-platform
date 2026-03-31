@@ -29,11 +29,14 @@ done
 
 echo ""
 
-# 2. .env 파일 생성
+# 2. envs/ → 각 프로젝트/.env 복사
 ENV_PROJECTS=("react-agent" "document-parser-server" "file-manager-admin" "agent-chat-ui")
 
 for project in "${ENV_PROJECTS[@]}"; do
-  if [ -f "$project/.env" ]; then
+  if [ -f "envs/${project}.env" ]; then
+    cp "envs/${project}.env" "${project}/.env"
+    echo "[COPY] envs/${project}.env → ${project}/.env"
+  elif [ -f "$project/.env" ]; then
     echo "[SKIP] $project/.env 이미 존재"
   elif [ -f "$project/.env.example" ]; then
     cp "$project/.env.example" "$project/.env"
@@ -47,6 +50,5 @@ echo ""
 echo "=== 세팅 완료 ==="
 echo ""
 echo "다음 단계:"
-echo "  1. 각 프로젝트의 .env 파일에 API 키를 입력하세요"
-echo "  2. docker compose up -d --build"
+echo "  1. docker compose up -d --build"
 echo ""
