@@ -1,0 +1,96 @@
+services:
+  # -------------------------------------------------------
+  # 1) react-agent  (LangGraph API backend)
+  # -------------------------------------------------------
+  react-agent:
+    build:
+      context: ./react-agent
+      dockerfile: Dockerfile
+    container_name: react-agent
+    restart: unless-stopped
+    ports:
+      - "2024:2024"
+    env_file:
+      - ./react-agent/.env
+    environment:
+      - TZ=Asia/Seoul
+    # healthcheck defined in Dockerfile
+
+  # -------------------------------------------------------
+  # 2) document-parser-server  (FastAPI 문서 파싱 서버)
+  # -------------------------------------------------------
+  document-parser-server:
+    build:
+      context: ./document-parser-server
+      dockerfile: Dockerfile
+    container_name: document-parser-server
+    restart: unless-stopped
+    ports:
+      - "9997:9997"
+    volumes:
+      - ./document-parser-server/data:/app/data
+      - ./document-parser-server/result:/app/result
+      - ./document-parser-server/uploads:/app/uploads
+    env_file:
+      - ./document-parser-server/.env
+    environment:
+      - TZ=Asia/Seoul
+      - RUN_MODE=api
+    # healthcheck defined in Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
+    command: ["api"]
+
+  # -------------------------------------------------------
+  # 3) file-manager-admin  (FastAPI 관리자 서버)
+  #    - document-parser-client 라이브러리 포함 빌드
+  #    - document-parser-server healthy 후 기동
+  # -------------------------------------------------------
+  file-manager-admin:
+    build:
+      context: .
+      dockerfile: file-manager-admin/Dockerfile
+    container_name: file-manager-admin
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./file-manager-admin/.env
+    environment:
+      - TZ=Asia/Seoul
+      - PARSER_SERVER_URL=http://document-parser-server:9997
+    depends_on:
+      document-parser-server:
+        condition: service_healthy
+    # healthcheck defined in Dockerfile
+
+  # -------------------------------------------------------
+  # 4) agent-chat-ui  (Next.js 프론트엔드)
+  #    - /api 프록시 -> react-agent
+  # -------------------------------------------------------
+  agent-chat-ui:
+    build:
+      context: ./agent-chat-ui
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_ASSISTANT_ID: agent
+    container_name: agent-chat-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./agent-chat-ui/.env
+    environment:
+      - TZ=Asia/Seoul
+      - LANGGRAPH_API_URL=http://react-agent:2024
+      - AUTH_TRUST_HOST=true
+    depends_on:
+      react-agent:
+        condition: service_healthy

@@ -1,0 +1,21 @@
+# 개발용 오버라이드: 소스코드 마운트 + 핫리로드
+# 사용법: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+
+services:
+  react-agent:
+    volumes:
+      - ./react-agent/src:/deps/src
+
+  document-parser-server:
+    volumes:
+      - ./document-parser-server/app:/app/app
+    environment:
+      - DEBUG=true
+
+  file-manager-admin:
+    volumes:
+      - ./file-manager-admin/app:/app/app
+
+  agent-chat-ui:
+    volumes:
+      - ./agent-chat-ui/src:/app/src

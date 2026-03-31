@@ -1,0 +1,35 @@
+# 프로덕션용 오버라이드: restart 정책 + 로깅
+# 사용법: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+services:
+  react-agent:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  document-parser-server:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  file-manager-admin:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  agent-chat-ui:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

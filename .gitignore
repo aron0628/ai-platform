@@ -1,0 +1,10 @@
+# 하위 프로젝트 (각자 별도 repo)
+react-agent/
+document-parser-server/
+document-parser-client/
+file-manager-admin/
+agent-chat-ui/
+
+# 환경변수
+.env
+*.env.local
