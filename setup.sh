@@ -27,6 +27,18 @@ for repo in "${REPOS[@]}"; do
   fi
 done
 
+# .env 파일 배포
+echo ""
+echo "=== .env 파일 배포 ==="
+for repo in "${REPOS[@]}"; do
+  if [ -f "envs/${repo}.env" ] && [ -d "$repo" ]; then
+    cp "envs/${repo}.env" "$repo/.env"
+    echo "[OK]   $repo/.env 복사 완료"
+  else
+    echo "[SKIP] $repo .env 파일 또는 디렉토리 없음"
+  fi
+done
+
 echo ""
 echo "=== 세팅 완료 ==="
 echo ""

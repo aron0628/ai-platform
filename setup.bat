@@ -24,6 +24,22 @@ for %%R in (react-agent document-parser-server document-parser-client file-manag
     )
 )
 
+REM .env 파일 배포
+echo.
+echo === .env 파일 배포 ===
+for %%R in (react-agent document-parser-server document-parser-client file-manager-admin agent-chat-ui) do (
+    if exist "envs\%%R.env" (
+        if exist "%%R\" (
+            copy /Y "envs\%%R.env" "%%R\.env" >nul
+            echo [OK]   %%R\.env 복사 완료
+        ) else (
+            echo [SKIP] %%R 디렉토리 없음
+        )
+    ) else (
+        echo [SKIP] %%R .env 파일 없음
+    )
+)
+
 echo.
 echo === 세팅 완료 ===
 echo.
